@@ -31,6 +31,9 @@ import { decodeHeaderValue } from '../private/headers';
 import { ModuleRpcUtils } from '../../../utils';
 import { ModuleRpcClient } from '../../../client';
 import { ModuleRpcCommon } from '../../../common';
+import debug from 'debug';
+
+const debugLog = debug('rpc_ts:grpc-web:client');
 
 /** Options for the RPC client of the gRPC-Web protocol. */
 export interface GrpcWebClientOptions {
@@ -356,7 +359,10 @@ class GrpcWebStream<Request, Response, ResponseContext>
       switch (chunk.chunkType) {
         case ChunkType.MESSAGE:
           if (chunk.data) {
+            const startDecode = Date.now()
             const response = this.codec.decodeMessage(this.method, chunk.data);
+            debugLog(`decodeMessage chunk performance ${Date.now() - startDecode}ms`)
+
             this.emit('message', {
               response,
               responseContext: this.responseContext,
