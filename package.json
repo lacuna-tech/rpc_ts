@@ -79,6 +79,7 @@
     "format:check": "prettier -l --list-different --ignore-path .gitignore '**/*.ts'",
     "all": "yarn build && yarn ts && yarn ts:doc && yarn format:check && yarn lint && yarn test && yarn doc",
     "precommit": "lint-staged",
+    "prepare": "yarn build",
     "extra-md-ts": "cat README.md | yarn --silent codedown Typescript > readme_code.ts",
     "doc": "ts-node src/site/index.ts",
     "doc:serve": "yarn doc && (cd site/landing && bundle exec jekyll serve)",
