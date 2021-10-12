@@ -14,6 +14,9 @@ import { StreamProducer, Stream, transformStream } from './stream';
 import { mapValuesWithStringKeys } from '../utils/utils';
 import * as events from 'events';
 import { retryStream } from './stream_retrier';
+import debug from 'debug';
+
+const debugLog = debug('rpc_ts:client:service')
 
 /**
  * Default list of [[ModuleRpcCommon.RpcErrorType]] error types that
@@ -213,7 +216,9 @@ export class Service<
           return async (request: any) => {
             // Any-cast is the simplest way since it is difficult to type assert
             // the fact that it is a unary method.
+            const startCall = Date.now();
             const { response } = await this.call(method as any, request);
+            debugLog(`${method} call time ${Date.now() - startCall}ms`)
             return response;
           };
         }

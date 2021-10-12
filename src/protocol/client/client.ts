@@ -23,6 +23,7 @@ import { ModuleRpcContextClient } from '../../context/client';
 import { ModuleRpcProtocolGrpcWebClient } from '../grpc_web/client';
 import { ModuleRpcCommon } from '../../common';
 import { ModuleRpcClient } from '../../client';
+import { GrpcWebCodec } from '../grpc_web/common/codec';
 
 export interface RpcClientOptions {
   /** The remote address to connect to (example: https://test.com:8000). */
@@ -38,6 +39,12 @@ export interface RpcClientOptions {
   getGrpcWebTransport?: (
     options: grpc.TransportOptions,
   ) => grpc.Transport | Error;
+
+  /**
+   * The Codec to use.  By default, we use the [[GrpcWebJsonCodec]] codec.  The Codec must match
+   * the Codec used by the server (this is enforced through content-type negotiation).
+   */
+   codec?: GrpcWebCodec
 }
 
 export function getRpcClient<
@@ -77,6 +84,7 @@ export function getRpcClient<
     {
       remoteAddress: options.remoteAddress,
       getTransport: options.getGrpcWebTransport,
+      codec: options.codec,
     },
   ) as ModuleRpcClient.Service<serviceDefinition, ResponseContext>).methodMap();
 }
