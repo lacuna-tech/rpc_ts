@@ -83,7 +83,8 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
 }
 
 /**
- * A Codec that serializes/deserializes messages to and from JSON.
+ * A Codec that serializes/deserializes messages to and from JSON,
+ * using zipson for compression.
  */
  export class GrpcWebJsonWithZipsonCodec implements GrpcWebCodec {
   /** @override */
