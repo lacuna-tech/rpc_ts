@@ -134,6 +134,6 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
       // a string that can be UTF-8 encoded).
       throw new Error("a payload cannot be 'undefined'");
     }
-    return encodeUtf8(stringify(payload));
+    return encodeUtf8(stringify(payload, { fullPrecisionFloats: true }));
   }
 }
