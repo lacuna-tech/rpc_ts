@@ -36,6 +36,7 @@ import { ModuleRpcUtils } from '../../../utils';
 import { ModuleRpcCommon } from '../../../common';
 import { ModuleRpcServer } from '../../../server';
 import { HttpStatus } from '../../private/http_status';
+import debug from 'debug';
 
 /** Options for the RPC server of the gRPC-Web protocol. */
 export interface GrpcWebServerOptions<
@@ -101,6 +102,8 @@ const TRAILER_FLAG = 0x80;
 /** Default request limit (see [[GrpcWebServerOptions.requestLimit]]). */
 const DEFAULT_REQUEST_LIMIT: number | string = '100kb';
 
+const debugLog = debug('rpc_ts:grpc-web:server');
+
 /**
  * Registers the API routes of an RPC service for the gRPC-Web protocol.
  *
@@ -141,7 +144,21 @@ export function registerGrpcWebRoutes<
 
   if (options.useCompression) {
     // We compress the responses.
-    router.use(compression());
+    router.use(compression({ filter: (req) => {
+      const type = req.header('content-type')
+      const encoding = req.header('content-encoding')
+      debugLog(`content-type: ${type}`)
+      debugLog(`content-encoding: ${encoding}`)
+
+      if (type === 'grpc-web+json') {
+        if (encoding === 'gzip') {
+          debugLog(`Compressing response for content-type ${type}`)
+          return true
+        }
+      }
+
+      return false
+    }}));
   }
 
   for (const method in serviceDefinition) {
