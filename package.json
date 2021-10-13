@@ -1,6 +1,6 @@
 {
   "name": "@lacuna-tech/rpc_ts",
-  "version": "2.1.2-alpha.10",
+  "version": "2.1.2-alpha.11",
   "description": "Remote Procedure Calls in TypeScript made simple",
   "repository": "git@github.com/lacuna-tech/rpc_ts.git",
   "author": "Dashbot Ltd",
@@ -24,7 +24,7 @@
     "moment": "^2.14.1",
     "node-jose": "^1.0.0",
     "query-string": "^6.0.0",
-    "zipson": "^0.2.12"
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "@improbable-eng/grpc-web-node-http-transport": "^0.11.0",

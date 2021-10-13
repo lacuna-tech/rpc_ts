@@ -279,7 +279,7 @@ class GrpcWebStream<Request, Response, ResponseContext>
 
     this.clientContextConnector
       .provideRequestContext()
-      .then(requestContext => {
+      .then(async requestContext => {
         transport.start(
           new grpc.Metadata({
             'Content-Type': this.codec.getContentType(),
@@ -290,12 +290,12 @@ class GrpcWebStream<Request, Response, ResponseContext>
         );
         this.state = GrpcWebStreamState.started;
 
-        this.transport.sendMessage(
-          this.codec.encodeRequest(
-            this.method,
-            this.request instanceof Function ? this.request() : this.request,
-          ),
-        );
+        const encodedMessage = await this.codec.encodeRequest(
+          this.method,
+          this.request instanceof Function ? this.request() : this.request,
+        )
+        this.transport.sendMessage(encodedMessage); 
+        
         this.transport.finishSend();
       })
       .catch(err => {

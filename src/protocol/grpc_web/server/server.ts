@@ -327,7 +327,7 @@ async function processServerStream<
             reject(err);
           }
         },
-        onMessage: message => {
+        onMessage: async message => {
           try {
             // Check that onMessage is called at the appropriate times
             if (status === StreamStatus.notReady) {
@@ -345,7 +345,7 @@ async function processServerStream<
             // Encode the message.
             let encodedMessage: Uint8Array;
             try {
-              encodedMessage = codec.encodeMessage(
+              encodedMessage = await codec.encodeMessage(
                 fullMethodParts.method,
                 message,
               );
@@ -471,7 +471,7 @@ async function processUnary<
   // Send the response.
   try {
     resp.write(
-      encodeFrame(0, codec.encodeMessage(fullMethodParts.method, response)),
+      encodeFrame(0, await codec.encodeMessage(fullMethodParts.method, response)),
     );
     resp.write(
       encodeFrame(TRAILER_FLAG, codec.encodeTrailer(new grpc.Metadata())),

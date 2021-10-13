@@ -713,7 +713,7 @@ class InvalidCodec implements GrpcWebCodec {
   }
 
   /** @override */
-  encodeMessage(_method: string, _payload: any): Uint8Array {
+  async encodeMessage(_method: string, _payload: any): Promise<Uint8Array> {
     return encodeUtf8('__invalid_json__');
   }
 
@@ -723,7 +723,7 @@ class InvalidCodec implements GrpcWebCodec {
   }
 
   /** @override */
-  encodeRequest(_method: string, _message: any): Uint8Array {
+  async encodeRequest(_method: string, _message: any): Promise<Uint8Array> {
     return encodeUtf8('__invalid_json__');
   }
 
