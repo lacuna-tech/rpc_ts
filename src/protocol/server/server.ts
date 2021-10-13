@@ -24,6 +24,7 @@ import { registerGrpcWebRoutes } from '../grpc_web/server/server';
 import { ModuleRpcContextServer } from '../../context/server';
 import { ModuleRpcCommon } from '../../common';
 import { ModuleRpcServer } from '../../server';
+import { GrpcWebCodec } from '../grpc_web/common/codec';
 
 export interface RpcServerOptions {
   /** The express router to start from.  By default, we start from `Router()`. */
@@ -38,7 +39,13 @@ export interface RpcServerOptions {
    * for a good overview).  To mitigate this we recommend, among other things, to use metadata
    * to pass "master" secrets (such as session secrets) around.
    */
-   useCompression?: boolean;
+  useCompression?: boolean;
+
+  /**
+   * The Codec to use.  By default, we use the [[GrpcWebJsonCodec]] codec.  The Codec must match
+   * the Codec used by the client (this is enforced through content-type negotiation).
+   */
+  codec?: GrpcWebCodec;
 }
 
 export function registerRpcRoutes<
@@ -89,6 +96,7 @@ export function registerRpcRoutes<
       router: options.router,
       reportError: options.captureError,
       useCompression: options.useCompression,
+      codec: options.codec
     },
   );
 }
