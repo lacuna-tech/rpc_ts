@@ -12,10 +12,15 @@
 import { GrpcWebCodec } from './codec';
 import { decodeUtf8, encodeUtf8 } from '../private/utf8';
 import { grpc } from '@improbable-eng/grpc-web';
-import { gzip, gunzip } from 'zlib'
+import { gzip, gunzip } from 'zlib';
+import debug from 'debug';
+
+const debugLog = debug('rpc_ts:grpc_web:codec')
 
 const gzipPromise = (payload: string): Promise<Uint8Array> => {
   return new Promise ((resolve, reject) => {
+    debugLog('gzipPromise', { payload, stringPayload: payload })
+
     gzip(payload, (err, res) => {
       return err ? reject(err) : resolve(encodeUtf8(res.toString()))
     }) 
@@ -24,7 +29,9 @@ const gzipPromise = (payload: string): Promise<Uint8Array> => {
 
 const gunzipPromise = (payload: Uint8Array): Promise<string> => {
   return new Promise ((resolve, reject) => {
-    gunzip(payload.toString(), (err, res) => {
+    debugLog('gunzipPromise', { payload, stringPayload: decodeUtf8(payload) })
+
+    gunzip(decodeUtf8(payload), (err, res) => {
       return err ? reject(err) : resolve(res.toString())
     }) 
   })
