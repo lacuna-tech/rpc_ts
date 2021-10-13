@@ -12,7 +12,7 @@
 import { GrpcWebCodec } from './codec';
 import { decodeUtf8, encodeUtf8 } from '../private/utf8';
 import { grpc } from '@improbable-eng/grpc-web';
-
+import { parse, stringify } from 'zipson';
 /**
  * Line separator between the entries of the trailer metadata (as required by
  * the gRPC-Web specification).
@@ -123,12 +123,12 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
 
   /** @override */
   decodeRequest(_method: string, message: Uint8Array): any {
-    return JSON.parse(decodeUtf8(message));
+    return parse(decodeUtf8(message));
   }
 
   /** @override */
   decodeMessage(_method: string, encodedMessage: Uint8Array): any {
-    return JSON.parse(decodeUtf8(encodedMessage));
+    return parse(decodeUtf8(encodedMessage));
   }
 
   /** @override */
@@ -143,6 +143,6 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
       // a string that can be UTF-8 encoded).
       throw new Error("a payload cannot be 'undefined'");
     }
-    return encodeUtf8(JSON.stringify(payload));
-  } 
+    return encodeUtf8(stringify(payload));
+  }
 }

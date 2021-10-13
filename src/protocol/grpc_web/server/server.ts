@@ -14,7 +14,6 @@
 /** */
 import { Router, Response as ExpressResponse } from 'express';
 import * as bodyParser from 'body-parser';
-import * as compression from 'compression';
 import { GrpcWebCodec } from '../common/codec';
 import {
   getMetadataFromGrpcWebError,
@@ -36,7 +35,6 @@ import { ModuleRpcUtils } from '../../../utils';
 import { ModuleRpcCommon } from '../../../common';
 import { ModuleRpcServer } from '../../../server';
 import { HttpStatus } from '../../private/http_status';
-import debug from 'debug';
 
 /** Options for the RPC server of the gRPC-Web protocol. */
 export interface GrpcWebServerOptions<
@@ -102,8 +100,6 @@ const TRAILER_FLAG = 0x80;
 /** Default request limit (see [[GrpcWebServerOptions.requestLimit]]). */
 const DEFAULT_REQUEST_LIMIT: number | string = '100kb';
 
-const debugLog = debug('rpc_ts:grpc-web:server');
-
 /**
  * Registers the API routes of an RPC service for the gRPC-Web protocol.
  *
@@ -141,25 +137,6 @@ export function registerGrpcWebRoutes<
       limit: options.requestLimit || DEFAULT_REQUEST_LIMIT,
     }),
   );
-
-  if (options.useCompression) {
-    // We compress the responses.
-    router.use(compression({ filter: (req) => {
-      const type = req.header('Content-Type')
-      const encoding = req.header('Accept-Encoding')
-      debugLog(`content-type: ${type}`)
-      debugLog(`accept-encoding: ${encoding}`)
-
-      if (type === 'application/grpc-web+json') {
-        if (encoding === 'gzip') {
-          debugLog(`Compressing response for content-type ${type}`)
-          return true
-        }
-      }
-
-      return false
-    }}));
-  }
 
   for (const method in serviceDefinition) {
     if (!isLowerCamelCase(method)) {
