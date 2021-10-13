@@ -159,6 +159,13 @@ export function registerGrpcWebRoutes<
         resp.sendStatus(HttpStatus.notAcceptable);
         return;
       }
+      
+      const contentEncoding = req.header('content-encoding');
+
+      if (codec.getContentEncoding() !== contentEncoding) {
+        resp.sendStatus(HttpStatus.notAcceptable);
+        return;
+      }
 
       try {
         // Get the encoded request context from the HTTP headers
