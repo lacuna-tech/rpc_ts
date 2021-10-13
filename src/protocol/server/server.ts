@@ -34,14 +34,6 @@ export interface RpcServerOptions {
   captureError?: (err: Error, errorContext: { url?: string }) => void;
 
   /**
-   * Use compression on response bodies.  Compression can be disabled as it is a security issue
-   * (see https://www.blackhat.com/docs/asia-16/materials/asia-16-Karakostas-Practical-New-Developments-In-The-BREACH-Attack-wp.pdf
-   * for a good overview).  To mitigate this we recommend, among other things, to use metadata
-   * to pass "master" secrets (such as session secrets) around.
-   */
-  useCompression?: boolean;
-
-  /**
    * The Codec to use.  By default, we use the [[GrpcWebJsonCodec]] codec.  The Codec must match
    * the Codec used by the client (this is enforced through content-type negotiation).
    */
@@ -95,7 +87,6 @@ export function registerRpcRoutes<
     {
       router: options.router,
       reportError: options.captureError,
-      useCompression: options.useCompression,
       codec: options.codec
     },
   );

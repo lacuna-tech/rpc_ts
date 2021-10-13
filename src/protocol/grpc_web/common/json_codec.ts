@@ -28,10 +28,6 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
     return 'application/grpc-web+json';
   }
 
-  getContentEncoding() {
-    return 'identity';
-  }
-
   /** @override */
   encodeMessage(_method: string, payload: any): Uint8Array {
     return this.encode(payload);
@@ -84,17 +80,12 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
 
 /**
  * A Codec that serializes/deserializes messages to and from JSON,
- * using gzip for compression.
+ * using zipson for compression.
  */
- export class GrpcWebJsonWithGzipCodec implements GrpcWebCodec {
+ export class GrpcWebJsonWithZipsonCodec implements GrpcWebCodec {
   /** @override */
   getContentType() {
     return 'application/grpc-web+json';
-  }
-
-  /** @override */
-  getContentEncoding() {
-    return 'gzip';
   }
 
   /** @override */
