@@ -145,8 +145,8 @@ export function registerGrpcWebRoutes<
   if (options.useCompression) {
     // We compress the responses.
     router.use(compression({ filter: (req) => {
-      const type = req.header('content-type')
-      const encoding = req.header('accept-encoding')
+      const type = req.header('Content-Type')
+      const encoding = req.header('Accept-Encoding')
       debugLog(`content-type: ${type}`)
       debugLog(`accept-encoding: ${encoding}`)
 
