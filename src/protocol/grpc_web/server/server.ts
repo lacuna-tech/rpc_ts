@@ -150,7 +150,7 @@ export function registerGrpcWebRoutes<
       debugLog(`content-type: ${type}`)
       debugLog(`accept-encoding: ${encoding}`)
 
-      if (type === 'grpc-web+json') {
+      if (type === 'application/grpc-web+json') {
         if (encoding === 'gzip') {
           debugLog(`Compressing response for content-type ${type}`)
           return true

@@ -29,7 +29,7 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
   }
 
   getContentEncoding() {
-    return 'internal';
+    return 'identity';
   }
 
   /** @override */
