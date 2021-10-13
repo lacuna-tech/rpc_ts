@@ -146,9 +146,9 @@ export function registerGrpcWebRoutes<
     // We compress the responses.
     router.use(compression({ filter: (req) => {
       const type = req.header('content-type')
-      const encoding = req.header('content-encoding')
+      const encoding = req.header('accept-encoding')
       debugLog(`content-type: ${type}`)
-      debugLog(`content-encoding: ${encoding}`)
+      debugLog(`accept-encoding: ${encoding}`)
 
       if (type === 'grpc-web+json') {
         if (encoding === 'gzip') {
