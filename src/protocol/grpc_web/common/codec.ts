@@ -27,6 +27,8 @@ export interface GrpcWebCodec<Message = any> {
 
   /**
    * Returns the content encodings to put as HTTP headers for content negotiation.
+   * If this includes anything besides 'identity', ensure that compression is enabled
+   * on the server.
    */
   getContentEncoding(): string;
 
