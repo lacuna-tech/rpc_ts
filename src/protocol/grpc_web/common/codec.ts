@@ -25,6 +25,11 @@ export interface GrpcWebCodec<Message = any> {
    */
   getContentType(): string;
 
+  /**
+   * Returns the content encodings to put as HTTP headers for content negotiation.
+   */
+  getContentEncoding(): string;
+
   /** Encodes a request for the RPC method `method`. */
   encodeRequest(method: string, message: Message): Uint8Array;
 

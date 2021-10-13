@@ -284,6 +284,7 @@ class GrpcWebStream<Request, Response, ResponseContext>
           new grpc.Metadata({
             'content-type': this.codec.getContentType(),
             accept: this.codec.getContentType(),
+            'Content-Encoding': this.codec.getContentEncoding(),
             'x-user-agent': 'grpc-web-javascript/0.1',
             ...requestContext,
           }),
