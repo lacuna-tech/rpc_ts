@@ -34,6 +34,11 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
   }
 
   /** @override */
+  getContentEncoding() {
+    return undefined;
+  }
+
+  /** @override */
   encodeTrailer(metadata: grpc.Metadata): Uint8Array {
     const headers: string[] = [];
     for (const key in metadata.headersMap) {
@@ -86,6 +91,11 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
   /** @override */
   getContentType() {
     return 'application/grpc-web+json';
+  }
+
+  /** @override */
+  getContentEncoding() {
+    return 'gzip';
   }
 
   /** @override */
