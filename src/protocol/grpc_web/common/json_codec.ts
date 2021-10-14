@@ -12,7 +12,7 @@
 import { GrpcWebCodec } from './codec';
 import { decodeUtf8, encodeUtf8 } from '../private/utf8';
 import { grpc } from '@improbable-eng/grpc-web';
-import { parse, stringify } from 'zipson';
+import { gzip, ungzip } from 'pako';
 /**
  * Line separator between the entries of the trailer metadata (as required by
  * the gRPC-Web specification).
@@ -80,9 +80,9 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
 
 /**
  * A Codec that serializes/deserializes messages to and from JSON,
- * using zipson for compression.
+ * using gzip for compression.
  */
- export class GrpcWebJsonWithZipsonCodec implements GrpcWebCodec {
+ export class GrpcWebJsonWithGzipCodec implements GrpcWebCodec {
   /** @override */
   getContentType() {
     return 'application/grpc-web+json';
@@ -114,12 +114,12 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
 
   /** @override */
   decodeRequest(_method: string, message: Uint8Array): any {
-    return parse(decodeUtf8(message));
+    return JSON.parse(ungzip(message, { to: 'string' }));
   }
 
   /** @override */
   decodeMessage(_method: string, encodedMessage: Uint8Array): any {
-    return parse(decodeUtf8(encodedMessage));
+    return JSON.parse(ungzip(encodedMessage, { to: 'string' }));
   }
 
   /** @override */
@@ -134,6 +134,6 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
       // a string that can be UTF-8 encoded).
       throw new Error("a payload cannot be 'undefined'");
     }
-    return encodeUtf8(stringify(payload, { fullPrecisionFloats: true }));
+    return gzip(JSON.stringify(payload));
   }
 }
