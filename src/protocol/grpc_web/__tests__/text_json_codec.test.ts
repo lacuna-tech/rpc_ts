@@ -15,19 +15,21 @@ describe('rpc_ts', () => {
   describe('protocol json_codec', () => {
     const codec = new ModuleRpcProtocolGrpcWebCommon.GrpcWebJsonCodec();
 
-    it('encodes/decodes requests', async () => {
+    it('encodes/decodes requests', () => {
       fc.assert(
-        fc.asyncProperty(fc.string(), fc.jsonObject(), async (method, message) => {
-          expect(await codec.decodeRequest(method, await codec.encodeRequest(method, message))).to.deep.equal(message);
+        fc.property(fc.string(), fc.jsonObject(), (method, message) => {
+          expect(
+            codec.decodeRequest(method, codec.encodeRequest(method, message)),
+          ).to.deep.equal(message);
         }),
       );
     });
 
     it('encodes/decodes messages', () => {
       fc.assert(
-        fc.asyncProperty(fc.string(), fc.jsonObject(), async (method, message) => {
+        fc.property(fc.string(), fc.jsonObject(), (method, message) => {
           expect(
-            codec.decodeMessage(method, await codec.encodeMessage(method, message)),
+            codec.decodeMessage(method, codec.encodeMessage(method, message)),
           ).to.deep.equal(message);
         }),
       );

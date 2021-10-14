@@ -12,31 +12,7 @@
 import { GrpcWebCodec } from './codec';
 import { decodeUtf8, encodeUtf8 } from '../private/utf8';
 import { grpc } from '@improbable-eng/grpc-web';
-import { gzip, gunzip } from 'zlib';
-import debug from 'debug';
-
-const debugLog = debug('rpc_ts:grpc_web:codec')
-
-const gzipPromise = (payload: string): Promise<Uint8Array> => {
-  return new Promise ((resolve, reject) => {
-    debugLog('gzipPromise', { payload, stringPayload: payload })
-
-    gzip(payload, (err, res) => {
-      return err ? reject(err) : resolve(encodeUtf8(res.toString()))
-    }) 
-  })
-}
-
-const gunzipPromise = (payload: Uint8Array): Promise<string> => {
-  return new Promise ((resolve, reject) => {
-    debugLog('gunzipPromise', { payload, stringPayload: decodeUtf8(payload) })
-
-    gunzip(decodeUtf8(payload), (err, res) => {
-      return err ? reject(err) : resolve(res.toString())
-    }) 
-  })
-}
-
+import { parse, stringify } from 'zipson';
 /**
  * Line separator between the entries of the trailer metadata (as required by
  * the gRPC-Web specification).
@@ -53,7 +29,7 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
   }
 
   /** @override */
-  async encodeMessage(_method: string, payload: any): Promise<Uint8Array> {
+  encodeMessage(_method: string, payload: any): Uint8Array {
     return this.encode(payload);
   }
 
@@ -72,7 +48,7 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
   }
 
   /** @override */
-  async encodeRequest(_method: string, message: any): Promise<Uint8Array> {
+  encodeRequest(_method: string, message: any): Uint8Array {
     return this.encode(message);
   }
 
@@ -104,18 +80,16 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
 
 /**
  * A Codec that serializes/deserializes messages to and from JSON,
- * using Gzip for compression.
+ * using zipson for compression.
  */
- export class GrpcWebJsonWithGzipCodec implements GrpcWebCodec {
+ export class GrpcWebJsonWithZipsonCodec implements GrpcWebCodec {
   /** @override */
   getContentType() {
     return 'application/grpc-web+json';
   }
 
-  // FIXME: Add getContentEncoding override
-
   /** @override */
-  async encodeMessage(_method: string, payload: any): Promise<Uint8Array> {
+  encodeMessage(_method: string, payload: any): Uint8Array {
     return this.encode(payload);
   }
 
@@ -134,18 +108,18 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
   }
 
   /** @override */
-  async encodeRequest(_method: string, message: any): Promise<Uint8Array> {
+  encodeRequest(_method: string, message: any): Uint8Array {
     return this.encode(message);
   }
 
   /** @override */
-  async decodeRequest(_method: string, message: Uint8Array): Promise<any> {
-    return JSON.parse(await gunzipPromise(message));
+  decodeRequest(_method: string, message: Uint8Array): any {
+    return parse(decodeUtf8(message));
   }
 
   /** @override */
-  async decodeMessage(_method: string, encodedMessage: Uint8Array): Promise<any> {
-    return JSON.parse(await gunzipPromise(encodedMessage));
+  decodeMessage(_method: string, encodedMessage: Uint8Array): any {
+    return parse(decodeUtf8(encodedMessage));
   }
 
   /** @override */
@@ -153,14 +127,13 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
     return new grpc.Metadata(decodeUtf8(encodedTrailer));
   }
 
-  private async encode(payload: any): Promise<Uint8Array> {
+  private encode(payload: any): Uint8Array {
     if (payload === undefined) {
       // We need to single out undefined payloads as
       // JSON.stringify(undefined) === undefined (and so it is not
       // a string that can be UTF-8 encoded).
       throw new Error("a payload cannot be 'undefined'");
     }
-
-    return gzipPromise(JSON.stringify(payload));
+    return encodeUtf8(stringify(payload, { fullPrecisionFloats: true }));
   }
 }

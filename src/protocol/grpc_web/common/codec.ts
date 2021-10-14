@@ -26,18 +26,18 @@ export interface GrpcWebCodec<Message = any> {
   getContentType(): string;
 
   /** Encodes a request for the RPC method `method`. */
-  encodeRequest(method: string, message: Message): Promise<Uint8Array>;
+  encodeRequest(method: string, message: Message): Uint8Array;
 
   /** Decodes a request for the RPC method `method`. */
-  decodeRequest(method: string, message: Uint8Array): Promise<Message>;
+  decodeRequest(method: string, message: Uint8Array): Message;
 
   /**
    * Encodes a message (part of the RPC response) for the RPC method `method`.
    */
-  encodeMessage(method: string, message: Message): Promise<Uint8Array>;
+  encodeMessage(method: string, message: Message): Uint8Array;
 
   /** Decodes a message. */
-  decodeMessage(method: string, encodedMessage: Uint8Array): Promise<Message>;
+  decodeMessage(method: string, encodedMessage: Uint8Array): Message;
 
   /** Encodes a trailer metadata (part of the RPC response). */
   encodeTrailer(metadata: grpc.Metadata): Uint8Array;
