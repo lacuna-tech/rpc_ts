@@ -713,11 +713,6 @@ class InvalidCodec implements GrpcWebCodec {
   }
 
   /** @override */
-  getContentEncoding() {
-    return undefined
-  }
-
-  /** @override */
   encodeMessage(_method: string, _payload: any): Uint8Array {
     return encodeUtf8('__invalid_json__');
   }

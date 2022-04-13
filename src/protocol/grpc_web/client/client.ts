@@ -280,12 +280,9 @@ class GrpcWebStream<Request, Response, ResponseContext>
     this.clientContextConnector
       .provideRequestContext()
       .then(requestContext => {
-        const contentEncoding = this.codec.getContentEncoding();
-        
         transport.start(
           new grpc.Metadata({
             'Content-Type': this.codec.getContentType(),
-            ...(contentEncoding ? { 'Content-Encoding': contentEncoding } : {}),
             accept: this.codec.getContentType(),
             'x-user-agent': 'grpc-web-javascript/0.1',
             ...requestContext,
