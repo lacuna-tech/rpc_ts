@@ -159,9 +159,10 @@ export function registerGrpcWebRoutes<
         const encodedRequestContext: {
           [key: string]: string | number;
         } = ModuleRpcUtils.mapValuesWithStringKeys(
-          ModuleRpcUtils.filterNonNullValues<string, string[] | string | number[] | number>(
-            req.headers,
-          ),
+          ModuleRpcUtils.filterNonNullValues<
+            string,
+            string[] | string | number[] | number
+          >(req.headers),
           value =>
             typeof value === 'string' || typeof value === 'number'
               ? decodeHeaderValue(value.toString())

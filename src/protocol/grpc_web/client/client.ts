@@ -359,9 +359,11 @@ class GrpcWebStream<Request, Response, ResponseContext>
       switch (chunk.chunkType) {
         case ChunkType.MESSAGE:
           if (chunk.data) {
-            const startDecode = Date.now()
+            const startDecode = Date.now();
             const response = this.codec.decodeMessage(this.method, chunk.data);
-            debugLog(`decodeMessage chunk performance ${Date.now() - startDecode}ms`)
+            debugLog(
+              `decodeMessage chunk performance ${Date.now() - startDecode}ms`,
+            );
 
             this.emit('message', {
               response,

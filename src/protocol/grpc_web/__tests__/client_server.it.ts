@@ -671,7 +671,13 @@ const clientContextConnector = (
     return _.fromPairs(
       Utils.entries(encodedResponseContext)
         .filter(([key]) => Utils.keys(responseContext).includes(key))
-        .map(([key, value]) => [key, value.toString().replace(`${key}__`, '').trim()]),
+        .map(([key, value]) => [
+          key,
+          value
+            .toString()
+            .replace(`${key}__`, '')
+            .trim(),
+        ]),
     );
   },
 });
