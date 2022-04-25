@@ -157,16 +157,16 @@ export function registerGrpcWebRoutes<
       try {
         // Get the encoded request context from the HTTP headers
         const encodedRequestContext: {
-          [key: string]: string;
+          [key: string]: string | number;
         } = ModuleRpcUtils.mapValuesWithStringKeys(
-          ModuleRpcUtils.filterNonNullValues<string, string[] | string>(
+          ModuleRpcUtils.filterNonNullValues<string, string[] | string | number[] | number>(
             req.headers,
           ),
           value =>
-            typeof value === 'string'
-              ? decodeHeaderValue(value)
-              : /* istanbul ignore next */ value
-                  .map(decodeHeaderValue)
+            typeof value === 'string' || typeof value === 'number'
+              ? decodeHeaderValue(value.toString())
+              : /* istanbul ignore next */ (value as number[]) // Assume the worst to keep typescript happy
+                  .map(arrValue => decodeHeaderValue(arrValue.toString()))
                   .join(','),
         );
 
@@ -503,7 +503,7 @@ async function addEncodedResponseContext<RequestContext>(
   );
   ModuleRpcUtils.entries(encodedResponseContext).forEach(([key, value]) => {
     if (key) {
-      resp.setHeader(key.toString(), encodeHeaderValue(value));
+      resp.setHeader(key.toString(), encodeHeaderValue(value.toString()));
     }
   });
 }
