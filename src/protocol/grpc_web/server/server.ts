@@ -157,18 +157,20 @@ export function registerGrpcWebRoutes<
       try {
         // Get the encoded request context from the HTTP headers
         const encodedRequestContext: {
-          [key: string]: string | number;
+          [key: string]: string;
         } = ModuleRpcUtils.mapValuesWithStringKeys(
           ModuleRpcUtils.filterNonNullValues<
             string,
-            string[] | string | number[] | number
+            string[] | string | number[] | number | undefined
           >(req.headers),
           value =>
             typeof value === 'string' || typeof value === 'number'
               ? decodeHeaderValue(value.toString())
-              : /* istanbul ignore next */ (value as number[]) // Assume the worst to keep typescript happy
+              : value
+              ? /* istanbul ignore next */ (value as number[]) // Assume the worst to keep typescript happy
                   .map(arrValue => decodeHeaderValue(arrValue.toString()))
-                  .join(','),
+                  .join(',')
+              : '',
         );
 
         // Decode the request context and the request
