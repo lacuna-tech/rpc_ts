@@ -646,7 +646,7 @@ const serverContextConnector = (
     return _.fromPairs(
       Utils.entries(encodedRequestContext)
         .filter(([key]) => Utils.keys(requestContext).includes(key))
-        .map(([key, value]) => [key, value.replace(`${key}__`, '')]),
+        .map(([key, value]) => [key, value.toString().replace(`${key}__`, '')]),
     );
   },
   async provideResponseContext() {
@@ -671,7 +671,13 @@ const clientContextConnector = (
     return _.fromPairs(
       Utils.entries(encodedResponseContext)
         .filter(([key]) => Utils.keys(responseContext).includes(key))
-        .map(([key, value]) => [key, value.replace(`${key}__`, '').trim()]),
+        .map(([key, value]) => [
+          key,
+          value
+            .toString()
+            .replace(`${key}__`, '')
+            .trim(),
+        ]),
     );
   },
 });

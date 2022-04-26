@@ -34,13 +34,13 @@ export class TokenAuthServerContextConnector<AuthClaims>
         'missing auth context entry',
       );
     }
-    if (!auth.startsWith('Bearer ')) {
+    if (!auth.toString().startsWith('Bearer ')) {
       throw new ModuleRpcServer.ServerRpcError(
         ModuleRpcCommon.RpcErrorType.unauthenticated,
         'Authorization header is not a bearer token',
       );
     }
-    const token = auth.replace(/^Bearer\s+/, '');
+    const token = auth.toString().replace(/^Bearer\s+/, '');
     try {
       return { authClaims: await this.authClaimsHandler(token) };
     } catch (err) {

@@ -87,7 +87,7 @@ export function registerRpcRoutes<
     {
       router: options.router,
       reportError: options.captureError,
-      codec: options.codec
+      codec: options.codec,
     },
   );
 }

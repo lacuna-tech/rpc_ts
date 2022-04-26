@@ -82,7 +82,7 @@ export class GrpcWebJsonCodec implements GrpcWebCodec {
  * A Codec that serializes/deserializes messages to and from JSON,
  * using gzip for compression.
  */
- export class GrpcWebJsonWithGzipCodec implements GrpcWebCodec {
+export class GrpcWebJsonWithGzipCodec implements GrpcWebCodec {
   /** @override */
   getContentType() {
     return 'application/grpc-web+json';

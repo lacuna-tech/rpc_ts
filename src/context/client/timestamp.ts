@@ -33,7 +33,7 @@ export class TimestampClientContextConnector
       );
     }
     return {
-      date,
+      date: date.toString(),
     };
   }
 }

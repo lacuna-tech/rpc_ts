@@ -224,5 +224,5 @@ export enum RpcErrorType {
  * The maps are produced and decoded by the client/server context connectors.
  */
 export interface EncodedContext {
-  [key: string]: string;
+  [key: string]: string | number;
 }

@@ -44,7 +44,7 @@ export interface RpcClientOptions {
    * The Codec to use.  By default, we use the [[GrpcWebJsonCodec]] codec.  The Codec must match
    * the Codec used by the server (this is enforced through content-type negotiation).
    */
-   codec?: GrpcWebCodec
+  codec?: GrpcWebCodec;
 }
 
 export function getRpcClient<
